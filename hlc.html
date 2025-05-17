@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Care Symptom Detector</title>
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #2E7D32;
+      --text-color: #333;
+      --bg-color: #f9f9f9;
+      --card-bg: #fff;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --border-color: #e0e0e0;
+      --hover-color: #f0f7f0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    body.theme-transition {
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    
+    body.dark-mode {
+      --primary-color: #66BB6A;
+      --secondary-color: #81C784;
+      --text-color: #f0f0f0;
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+      --border-color: #333;
+      --hover-color: #2a2a2a;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      padding: 20px 0;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      color: var(--primary-color);
+      margin: 0;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 2px var(--shadow-color);
+    }
+    
+    .section {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px var(--shadow-color);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px var(--shadow-color);
+    }
+    
+    h2 {
+      color: var(--primary-color);
+      margin-top: 0;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
+      font-size: 1.8rem;
+    }
+    
+    .input-container {
+      display: flex;
+      margin-bottom: 20px;
+      position: relative;
+      border-radius: 50px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px var(--shadow-color);
+      transition: box-shadow 0.3s;
+    }
+    
+    .input-container.active {
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    }
+    
+    input[type="text"] {
+      flex: 1;
+      padding: 15px 20px;
+      border: none;
+      font-size: 1rem;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      outline: none;
+    }
+    
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 150px;
+    }
+    
+    button:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    #precautionOutput {
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+      background-color: var(--hover-color);
+      display: none;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    
+    .result-animation {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .symptom-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .symptom-item {
+      background-color: var(--card-bg);
+      padding: 12px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid var(--border-color);
+      text-align: center;
+      animation: fadeIn 0.5s ease-in-out forwards;
+      opacity: 0;
+    }
+    
+    .symptom-item:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px var(--shadow-color);
+    }
+    
+    .clinic-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    
+    .info-card {
+      flex: 1;
+      min-width: 250px;
+      padding: 15px;
+      background-color: var(--hover-color);
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .info-card h4 {
+      margin-top: 0;
+      color: var(--primary-color);
+    }
+    
+    .clinic-visual {
+      flex: 2;
+      min-width: 300px;
+      height: 300px;
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px var(--shadow-color);
+      transition: all 0.5s ease;
+      background: linear-gradient(135deg, var(--primary-color) 0%, #81C784 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+    
+    .clinic-visual:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px var(--shadow-color);
+    }
+    
+    .clinic-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    
+    .clinic-details {
+      text-align: center;
+      padding: 0 20px;
+    }
+    
+    .clinic-details h3 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+    
+    .clinic-details p {
+      font-size: 1.1rem;
+      margin: 5px 0;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .direction-btn {
+      margin-top: 20px;
+      background-color: white;
+      color: var(--primary-color);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .direction-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .control-btn {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: var(--text-color);
+    }
+    
+    .control-btn:hover {
+      background-color: var(--hover-color);
+      transform: translateY(-2px);
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 30px;
+      color: var(--text-color);
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      .section {
+        padding: 15px;
+      }
+      
+      .symptom-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+      
+      .input-container {
+        flex-direction: column;
+        border-radius: 10px;
+      }
+      
+      button {
+        border-radius: 0;
+        padding: 12px;
+      }
+      
+      input[type="text"] {
+        border-radius: 0;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="controls">
+      <button class="control-btn" onclick="toggleMode()">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-text">Theme</span>
+      </button>
+      <button class="control-btn" onclick="toggleLanguage()">
+        <span>🌐</span>
+        <span id="lang-text">Language</span>
+      </button>
+    </div>
+    
+    <header>
+      <h1 id="title">Symptom Detector</h1>
+    </header>
+    
+    <div class="section">
+      <h2 id="symptomPrompt">Enter Your Symptom</h2>
+      <div class="input-container">
+        <input type="text" id="symptomInput" placeholder="e.g. fever, headache, nausea">
+        <button onclick="getPrecaution()">
+          <span id="button-text">Get Precaution</span>
+        </button>
+      </div>
+      <div id="precautionOutput"></div>
+    </div>
+    
+    <div class="section">
+      <h2 id="clinicTitle">Clinic Information</h2>
+      <div class="clinic-info">
+        <div class="info-card">
+          <h4>Wellness Care Clinic</h4>
+          <p>456 Healthy Lane, Green Park<br>New Delhi, India</p>
+          <p>📞 +91-123-456-7890</p>
+          <p>⏰ Mon-Sat: 9:00 AM - 7:00 PM<br>Sunday: 10:00 AM - 2:00 PM</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2 id="supportedSymptomsTitle">Supported Symptoms</h2>
+      <p>Click on any symptom to get instant precautions:</p>
+      <div class="symptom-list" id="symptomList"></div>
+    </div>
+    
+    <footer>
+      <p>© 2025 Wellness Care Clinic. All rights reserved.</p>
+    </footer>
+  </div>
+  
+  <script>
+    // Data
+    let currentLang = "en";
+    let isLoading = false;
+
+    const symptoms = {
+      "fever": {
+        en: "Stay hydrated, rest well, and monitor temperature regularly.",
+        hi: "पानी पिएं, अच्छी नींद लें और तापमान की निगरानी करें।"
+      },
+      "cough": {
+        en: "Use cough syrup, avoid cold drinks, and stay warm.",
+        hi: "खांसी की दवा लें, ठंडी चीज़ों से बचें और गर्म रहें।"
+      },
+      "headache": {
+        en: "Take a mild painkiller, rest in a dark quiet room, and stay relaxed.",
+        hi: "हल्की दर्द की दवा लें, अंधेरे शांत कमरे में आराम करें।"
+      },
+      "fatigue": {
+        en: "Sleep properly, eat nutritious food, and avoid overworking.",
+        hi: "अच्छी नींद लें, पौष्टिक भोजन करें और अधिक काम से बचें।"
+      },
+      "sore throat": {
+        en: "Gargle with warm salt water, drink warm liquids, and avoid spicy foods.",
+        hi: "गर्म पानी से गरारे करें, गर्म तरल पिएं और मसालेदार खाना न खाएं।"
+      },
+      "shortness of breath": {
+        en: "Avoid heavy activity, rest, and consult a doctor if severe.",
+        hi: "भारी काम न करें, आराम करें और गंभीर हो तो डॉक्टर से मिलें।"
+      },
+      "nausea": {
+        en: "Avoid greasy foods, stay hydrated, and eat bland meals.",
+        hi: "तेलिय भोजन से बचें, पानी पिएं और हल्का भोजन करें।"
+      },
+      "vomiting": {
+        en: "Drink clear fluids, rest, and avoid solid foods temporarily.",
+        hi: "साफ तरल पिएं, आराम करें और ठोस खाना कुछ समय न लें।"
+      },
+      "body ache": {
+        en: "Rest, take warm baths, and use a mild pain reliever.",
+        hi: "आराम करें, गर्म पानी से स्नान करें और हल्की दवा लें।"
+      },
+      "diarrhea": {
+        en: "Drink ORS, eat simple food, and avoid dairy temporarily.",
+        hi: "ORS पिएं, हल्का खाना खाएं और दूध से कुछ समय बचें।"
+      },
+      "cold": {
+        en: "Stay warm, drink fluids, and use a nasal spray if needed.",
+        hi: "गर्म रहें, तरल लें और ज़रूरत पड़े तो नेज़ल स्प्रे का उपयोग करें।"
+      },
+      "dizziness": {
+        en: "Sit or lie down, drink water, and avoid sudden movements.",
+        hi: "बैठ जाएं या लेट जाएं, पानी पिएं और अचानक हिलने से बचें।"
+      },
+      "chest pain": {
+        en: "Stop activity, rest, and seek immediate medical attention.",
+        hi: "काम रोकें, आराम करें और तुरंत डॉक्टर से संपर्क करें।"
+      }
+    };
+
+    const translations = {
+      en: {
+        title: "Symptom Detector",
+        symptomPrompt: "Enter Your Symptom",
+        clinicTitle: "Clinic Information",
+        supportedSymptomsTitle: "Supported Symptoms",
+        getButton: "Get Precaution",
+        themeText: "Theme",
+        langText: "Language",
+        notFound: "Sorry, we don't have precautions for that symptom.",
+        clickPrompt: "Click on any symptom to get instant precautions:",
+        ourLocation: "Our Location"
+      },
+      hi: {
+        title: "लक्षण पहचानकर्ता",
+        symptomPrompt: "अपना लक्षण दर्ज करें",
+        clinicTitle: "क्लिनिक जानकारी",
+        supportedSymptomsTitle: "समर्थित लक्षण",
+        getButton: "सलाह प्राप्त करें",
+        themeText: "थीम",
+        langText: "भाषा",
+        notFound: "क्षमा करें, इस लक्षण के लिए हमारे पास जानकारी नहीं है।",
+        clickPrompt: "तुरंत सलाह के लिए किसी भी लक्षण पर क्लिक करें:",
+        ourLocation: "हमारा स्थान"
+      }
+    };
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+      populateSymptomList();
+      setupEventListeners();
+      initMap();
+      
+      // Add animation class to body after a slight delay
+      setTimeout(() => {
+        document.body.classList.add('theme-transition');
+      }, 100);
+    });
+
+    // Initialize the map
+    function initMap() {
+      // Create a static map image as a fallback
+      const mapContainer = document.getElementById('map');
+      
+      // For demonstration, we'll use a static map image from Google Maps
+      const mapImage = document.createElement('img');
+      mapImage.src = 'https://maps.googleapis.com/maps/api/staticmap?center=Green+Park,New+Delhi,India&zoom=15&size=600x300&maptype=roadmap&markers=color:green%7CLabel:W%7CGreen+Park,New+Delhi,India&key=YOUR_API_KEY';
+      mapImage.alt = 'Map showing location of Wellness Care Clinic';
+      mapImage.style.width = '100%';
+      mapImage.style.height = '100%';
+      mapImage.style.objectFit = 'cover';
+      mapImage.style.borderRadius = '8px';
+      
+      // Add a marker animation
+      const marker = document.createElement('div');
+      marker.className = 'map-marker';
+      marker.innerHTML = '📍';
+      
+      mapContainer.appendChild(mapImage);
+      mapContainer.appendChild(marker);
+      
+      // Fallback for when no API key is provided
+      mapImage.onerror = function() {
+        // Create a styled div that looks like a map
+        mapContainer.removeChild(mapImage);
+        mapContainer.style.backgroundColor = '#e8e8e8';
+        mapContainer.style.position = 'relative';
+        
+        const fallbackText = document.createElement('div');
+        fallbackText.style.position = 'absolute';
+        fallbackText.style.top = '50%';
+        fallbackText.style.left = '50%';
+        fallbackText.style.transform = 'translate(-50%, -50%)';
+        fallbackText.style.textAlign = 'center';
+        fallbackText.innerHTML = `
+          <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">Wellness Care Clinic</div>
+          <div>456 Healthy Lane, Green Park</div>
+          <div>New Delhi, India</div>
+        `;
+        
+        mapContainer.appendChild(fallbackText);
+      };
+    }
+
+    // Populate the symptom list
+    function populateSymptomList() {
+      const symptomList = document.getElementById('symptomList');
+      symptomList.innerHTML = '';
+      
+      Object.keys(symptoms).forEach((symptom, index) => {
+        const item = document.createElement('div');
+        item.className = 'symptom-item';
+        item.textContent = symptom.charAt(0).toUpperCase() + symptom.slice(1);
+        item.style.animationDelay = `${index * 0.05}s`;
+        item.addEventListener('click', () => {
+          document.getElementById('symptomInput').value = symptom;
+          getPrecaution();
+          
+          // Scroll to result
+          setTimeout(() => {
+            document.getElementById('precautionOutput').scrollIntoView({ behavior: 'smooth' });
+          }, 500);
+        });
+        symptomList.appendChild(item);
+      });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Enter key in input field
+      document.getElementById('symptomInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          getPrecaution();
+        }
+      });
+      
+      // Input focus animation
+      const input = document.getElementById('symptomInput');
+      input.addEventListener('focus', () => {
+        input.parentElement.classList.add('active');
+      });
+      
+      input.addEventListener('blur', () => {
+        input.parentElement.classList.remove('active');
+      });
+    }
+
+    // Get precaution for the entered symptom
+    function getPrecaution() {
+      if (isLoading) return;
+      
+      const input = document.getElementById('symptomInput').value.trim().toLowerCase();
+      const output = document.getElementById('precautionOutput');
+      const button = document.getElementById('precautionBtn');
+      const buttonText = document.getElementById('button-text');
+      
+      if (!input) {
+        shakeElement(document.getElementById('symptomInput'));
+        return;
+      }
+      
+      // Show loading state
+      isLoading = true;
+      buttonText.innerHTML = `<span class="loading"></span> Processing`;
+      output.style.display = 'none';
+      
+      // Simulate API call with timeout
+      setTimeout(() => {
+        if (symptoms[input]) {
+          output.innerHTML = `<strong>${symptoms[input][currentLang]}</strong>`;
+        } else {
+          output.innerHTML = translations[currentLang].notFound;
+        }
+        
+        // Reset button and show result with animation
+        buttonText.textContent = translations[currentLang].getButton;
+        output.style.display = 'block';
+        output.classList.add('result-animation');
+        
+        // Remove animation class after animation completes
+        setTimeout(() => {
+          output.classList.remove('result-animation');
+        }, 500);
+        
+        isLoading = false;
+      }, 800); // Simulate network delay
+    }
+
+    // Toggle language
+    function toggleLanguage() {
+      currentLang = currentLang === "en" ? "hi" : "en";
+      
+      // Update UI elements
+      document.getElementById("title").innerText = translations[currentLang].title;
+      document.getElementById("symptomPrompt").innerText = translations[currentLang].symptomPrompt;
+      document.getElementById("clinicTitle").innerText = translations[currentLang].clinicTitle;
+      document.getElementById("supportedSymptomsTitle").innerText = translations[currentLang].supportedSymptomsTitle;
+      document.getElementById("button-text").innerText = translations[currentLang].getButton;
+      document.getElementById("theme-text").innerText = translations[currentLang].themeText;
+      document.getElementById("lang-text").innerText = translations[currentLang].langText;
+      
+      // Update map title
+      const mapTitle = document.querySelector('.map-container h4');
+      if (mapTitle) {
+        mapTitle.innerText = translations[currentLang].ourLocation;
+      }
+      
+      // Update placeholder text
+      document.getElementById("symptomInput").placeholder = currentLang === "en" ? 
+        "e.g. fever, headache, nausea" : 
+        "जैसे बुखार, सिरदर्द, मतली";
+      
+      // Update symptom list prompt
+      document.querySelector('.section:nth-child(3) p').textContent = translations[currentLang].clickPrompt;
+      
+      // Animate the language change
+      document.body.classList.add('language-change');
+      setTimeout(() => {
+        document.body.classList.remove('language-change');
+      }, 500);
+    }
+
+    // Toggle dark/light mode
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+      
+      // Update theme icon
+      const themeIcon = document.getElementById('theme-icon');
+      themeIcon.textContent = document.body.classList.contains('dark-mode') ? '🌙' : '☀️';
+      
+      // Add ripple effect to body
+      const ripple = document.createElement('div');
+      ripple.className = 'theme-ripple';
+      document.body.appendChild(ripple);
+      
+      setTimeout(() => {
+        document.body.removeChild(ripple);
+      }, 1000);
+    }
+
+    // Utility function to shake an element for invalid input
+    function shakeElement(element) {
+      element.classList.add('shake');
+      setTimeout(() => {
+        element.classList.remove('shake');
+      }, 500);
+    }
+
+    // Add shake animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-5px); }
+        40%, 80% { transform: translateX(5px); }
+      }
+      .shake {
+        animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+      }
+      @keyframes language-change {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+      }
+      .language-change {
+        animation: language-change 0.5s ease;
+      }
+      .theme-ripple {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, 
+          rgba(255,255,255,0.2) 0%, 
+          rgba(255,255,255,0) 70%);
+        z-index: 9999;
+        pointer-events: none;
+        opacity: 0;
+        animation: ripple 1s ease-out forwards;
+      }
+      @keyframes ripple {
+        0% { transform: scale(0); opacity: 0.5; }
+        100% { transform: scale(2); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
