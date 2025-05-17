@@ -14,6 +14,8 @@
       --shadow-color: rgba(0, 0, 0, 0.1);
       --border-color: #e0e0e0;
       --hover-color: #f0f7f0;
+      --accent-color: #FF9800;
+      --accent-hover: #F57C00;
     }
     
     body {
@@ -337,6 +339,126 @@
         padding: 12px;
       }
     }
+    
+    /* FAQ Accordion Styles */
+    .faq-section {
+      margin-top: 20px;
+    }
+    
+    .faq-category {
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px var(--shadow-color);
+      background-color: var(--card-bg);
+      transition: all 0.3s ease;
+    }
+    
+    .faq-category:hover {
+      box-shadow: 0 5px 15px var(--shadow-color);
+    }
+    
+    .category-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.3s;
+    }
+    
+    .category-header:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    .category-header h3 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    
+    .category-icon {
+      transition: transform 0.3s ease;
+    }
+    
+    .category-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+    
+    .faq-category.active .category-content {
+      max-height: 1000px;
+    }
+    
+    .faq-category.active .category-icon {
+      transform: rotate(180deg);
+    }
+    
+    .faq-item {
+      border-bottom: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+    
+    .faq-question {
+      padding: 15px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--card-bg);
+      transition: background-color 0.3s;
+    }
+    
+    .faq-question:hover {
+      background-color: var(--hover-color);
+    }
+    
+    .question-text {
+      font-weight: 500;
+    }
+    
+    .question-icon {
+      transition: transform 0.3s ease;
+    }
+    
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 20px;
+      background-color: var(--hover-color);
+      transition: all 0.5s ease;
+      line-height: 1.6;
+    }
+    
+    .faq-item.active .faq-answer {
+      max-height: 300px;
+      padding: 15px 20px;
+    }
+    
+    .faq-item.active .question-icon {
+      transform: rotate(180deg);
+    }
+    
+    .highlight {
+      color: var(--accent-color);
+      font-weight: 500;
+    }
+    
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .faq-item.active .faq-answer {
+      animation: slideDown 0.5s ease forwards;
+    }
+    
+    @keyframes ripple {
+      0% { transform: scale(0); opacity: 0.5; }
+      100% { transform: scale(2); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -375,6 +497,159 @@
           <p>456 Healthy Lane, Green Park<br>New Delhi, India</p>
           <p>📞 +91-123-456-7890</p>
           <p>⏰ Mon-Sat: 9:00 AM - 7:00 PM<br>Sunday: 10:00 AM - 2:00 PM</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2 id="faqTitle">Frequently Asked Questions</h2>
+      <div class="faq-section">
+        <!-- Respiratory Symptoms Category -->
+        <div class="faq-category">
+          <div class="category-header" onclick="toggleCategory(this.parentElement)">
+            <h3>Respiratory Symptoms</h3>
+            <span class="category-icon">▼</span>
+          </div>
+          <div class="category-content">
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">When should I see a doctor for a cough?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                You should see a doctor if your cough persists for more than <span class="highlight">2 weeks</span>, is accompanied by <span class="highlight">high fever</span>, produces <span class="highlight">blood or thick green/yellow mucus</span>, or if you experience <span class="highlight">difficulty breathing</span> or <span class="highlight">chest pain</span>.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">How can I differentiate between a cold and the flu?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                Colds typically develop gradually with symptoms like runny nose and congestion. Flu comes on suddenly with <span class="highlight">high fever</span>, <span class="highlight">body aches</span>, <span class="highlight">extreme fatigue</span>, and <span class="highlight">headaches</span>. Flu symptoms are generally more severe than cold symptoms and can lead to serious health complications.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">What home remedies help with shortness of breath?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                Try <span class="highlight">pursed lip breathing</span> (breathe in through your nose, purse lips like blowing out a candle, and breathe out slowly), <span class="highlight">sitting forward</span> supported by a table, and <span class="highlight">staying calm</span>. However, if shortness of breath is severe or new, seek medical attention immediately.
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Digestive Issues Category -->
+        <div class="faq-category">
+          <div class="category-header" onclick="toggleCategory(this.parentElement)">
+            <h3>Digestive Issues</h3>
+            <span class="category-icon">▼</span>
+          </div>
+          <div class="category-content">
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">What causes nausea and how can I relieve it?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                Nausea can be caused by <span class="highlight">food poisoning</span>, <span class="highlight">motion sickness</span>, <span class="highlight">pregnancy</span>, or <span class="highlight">medication side effects</span>. Relief methods include <span class="highlight">ginger tea</span>, <span class="highlight">peppermint</span>, <span class="highlight">deep breathing</span>, eating <span class="highlight">small, bland meals</span>, and staying <span class="highlight">hydrated</span>.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">How long should diarrhea last before seeing a doctor?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                If diarrhea lasts more than <span class="highlight">2-3 days</span>, is accompanied by <span class="highlight">severe abdominal pain</span>, <span class="highlight">high fever</span> (over 102°F/39°C), <span class="highlight">blood in stool</span>, or signs of <span class="highlight">dehydration</span> (extreme thirst, dry mouth, little or no urination), consult a doctor immediately.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">What foods should I avoid when having stomach issues?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                Avoid <span class="highlight">spicy foods</span>, <span class="highlight">fatty or fried foods</span>, <span class="highlight">dairy products</span>, <span class="highlight">caffeine</span>, <span class="highlight">alcohol</span>, and <span class="highlight">high-fiber foods</span>. Stick to the BRAT diet (Bananas, Rice, Applesauce, Toast) and clear broths until your stomach settles.
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Pain Management Category -->
+        <div class="faq-category">
+          <div class="category-header" onclick="toggleCategory(this.parentElement)">
+            <h3>Pain Management</h3>
+            <span class="category-icon">▼</span>
+          </div>
+          <div class="category-content">
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">What's the difference between different types of headaches?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                <span class="highlight">Tension headaches</span> feel like pressure around the head, <span class="highlight">migraines</span> cause throbbing pain often on one side with sensitivity to light and sound, <span class="highlight">cluster headaches</span> cause severe pain around one eye, and <span class="highlight">sinus headaches</span> cause pain and pressure around the sinuses, often with congestion.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">When is chest pain a medical emergency?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                Seek immediate medical attention if chest pain is <span class="highlight">crushing or squeezing</span>, <span class="highlight">radiates to jaw, neck, or arms</span>, is accompanied by <span class="highlight">shortness of breath</span>, <span class="highlight">sweating</span>, <span class="highlight">nausea</span>, or <span class="highlight">dizziness</span>. These could be signs of a heart attack and require emergency care.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">What are natural remedies for body aches?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                Try <span class="highlight">warm baths</span> with Epsom salts, <span class="highlight">gentle stretching</span>, <span class="highlight">massage</span>, <span class="highlight">adequate hydration</span>, <span class="highlight">turmeric</span> (anti-inflammatory), and <span class="highlight">proper rest</span>. Alternating hot and cold compresses can also help reduce inflammation and pain.
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- General Health Category -->
+        <div class="faq-category">
+          <div class="category-header" onclick="toggleCategory(this.parentElement)">
+            <h3>General Health</h3>
+            <span class="category-icon">▼</span>
+          </div>
+          <div class="category-content">
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">How much water should I drink daily?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                The general recommendation is about <span class="highlight">8 cups (2 liters)</span> per day, but needs vary based on activity level, climate, and overall health. A good indicator is having <span class="highlight">pale yellow urine</span>. Increase intake during illness, hot weather, or when exercising.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">How can I boost my immune system naturally?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                Maintain a <span class="highlight">balanced diet</span> rich in fruits and vegetables, get <span class="highlight">adequate sleep</span> (7-9 hours), <span class="highlight">exercise regularly</span>, <span class="highlight">manage stress</span>, <span class="highlight">stay hydrated</span>, and consider foods rich in vitamins C and D, zinc, and probiotics.
+              </div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-question" onclick="toggleFAQ(this.parentElement)">
+                <div class="question-text">When should I get an annual health checkup?</div>
+                <span class="question-icon">▼</span>
+              </div>
+              <div class="faq-answer">
+                Most adults should have a checkup <span class="highlight">once a year</span>. However, frequency may vary based on age, health conditions, and family history. Regular checkups help detect potential health issues early and maintain overall wellness through preventive care.
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -717,6 +992,37 @@
       }
     `;
     document.head.appendChild(style);
+    
+    // FAQ Accordion Functions
+    function toggleCategory(category) {
+      category.classList.toggle('active');
+    }
+    
+    function toggleFAQ(item) {
+      // Close all other open FAQs in the same category
+      const parent = item.parentElement;
+      const siblings = parent.querySelectorAll('.faq-item');
+      
+      siblings.forEach(sibling => {
+        if (sibling !== item && sibling.classList.contains('active')) {
+          sibling.classList.remove('active');
+        }
+      });
+      
+      // Toggle the clicked item
+      item.classList.toggle('active');
+    }
+    
+    // Update translations for FAQ
+    translations.en.faqTitle = "Frequently Asked Questions";
+    translations.hi.faqTitle = "अक्सर पूछे जाने वाले प्रश्न";
+    
+    // Update language toggle to include FAQ title
+    const originalToggleLanguage = toggleLanguage;
+    toggleLanguage = function() {
+      originalToggleLanguage();
+      document.getElementById("faqTitle").innerText = translations[currentLang].faqTitle;
+    };
   </script>
 </body>
 </html>
